@@ -2,31 +2,29 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <title>LOGOS-LOGIC | INTERACTIVE RATIO</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LOGOS-LOGIC | Functional Ratio</title>
     <style>
-        body { margin: 0; background: #000; color: #D4AF37; overflow: hidden; font-family: 'Times New Roman', serif; cursor: crosshair; }
-        #interface {
-            position: absolute; width: 100%; height: 100%;
-            display: flex; flex-direction: column; justify-content: space-between;
-            padding: 30px; box-sizing: border-box; z-index: 10;
-            pointer-events: none; text-transform: uppercase; letter-spacing: 0.3em;
+        :root { --gold: #D4AF37; --bg: #000; }
+        body { margin: 0; background: var(--bg); color: var(--gold); font-family: sans-serif; overflow: hidden; }
+        
+        /* 機能としてのラベル：何が起きているかを明示 */
+        #hud {
+            position: absolute; top: 20px; left: 20px; z-index: 100;
+            border-left: 2px solid var(--gold); padding-left: 15px;
+            pointer-events: none;
         }
-        .label { opacity: 0.5; font-size: 0.7rem; transition: opacity 0.5s; }
-        .center-logos { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 3rem; opacity: 0.8; }
-        canvas { position: absolute; top: 0; left: 0; }
+        .status { font-size: 12px; letter-spacing: 2px; margin-bottom: 5px; opacity: 0.8; }
+        .value { font-family: monospace; font-size: 18px; }
+
+        canvas { display: block; cursor: crosshair; }
     </style>
 </head>
 <body>
-    <div id="interface">
-        <div style="display: flex; justify-content: space-between;">
-            <div id="label-logos" class="label">LOGOS: INPUT DETECTED</div>
-            <div id="label-logic" class="label">LOGIC: $\Phi$ CONSTANT</div>
-        </div>
-        <div class="center-logos">Φ</div>
-        <div style="display: flex; justify-content: space-between;">
-            <div id="label-currency" class="label">CURRENCY: RESONANCE</div>
-            <div class="label">STATUS: PERSISTENT</div>
-        </div>
+    <div id="hud">
+        <div class="status">LOGOS-LOGIC SYSTEM ACTIVE</div>
+        <div class="value" id="monitor">RATIO: 1.618033...</div>
+        <div class="status" style="margin-top: 10px;">CURRENCY GENERATION: <span id="nodes">0</span> NODES</div>
     </div>
     <canvas id="world"></canvas>
 
@@ -35,75 +33,66 @@
         const ctx = canvas.getContext('2d');
         const PHI = (1 + Math.sqrt(5)) / 2;
 
-        let width, height, scale;
-        let mouse = { re: 0, im: 0, active: false };
+        let width, height;
+        let particles = [];
+        let interactionEnergy = 1.0;
 
         function resize() {
             width = canvas.width = window.innerWidth;
             height = canvas.height = window.innerHeight;
-            scale = Math.min(width, height) / 4;
         }
         window.onresize = resize;
         resize();
 
-        // 人間の入力を数理座標へ変換
-        window.addEventListener('mousemove', (e) => {
-            mouse.re = (e.clientX - width / 2) / scale;
-            mouse.im = (e.clientY - height / 2) / scale;
-            mouse.active = true;
-            document.querySelectorAll('.label').forEach(el => el.style.opacity = "1");
-        });
+        // 人間の入力を「エネルギー量」として数値化（UX）
+        window.addEventListener('mousedown', () => { interactionEnergy = PHI; });
+        window.addEventListener('mouseup', () => { interactionEnergy = 1.0; });
 
-        function transform(re, im, mRe, mIm) {
-            // 人間の入力を「干渉項」として組み込む
-            const dr = re + mRe * 0.1;
-            const di = im + mIm * 0.1;
-            const den = Math.pow(dr + 1, 2) + Math.pow(di, 2);
-            return {
-                re: ((PHI * dr + 1) * (dr + 1) + PHI * Math.pow(di, 2)) / den,
-                im: (PHI * di * (dr + 1) - (PHI * dr + 1) * di) / den
-            };
+        class Node {
+            constructor(i) {
+                this.id = i;
+                this.reset();
+            }
+            reset() {
+                this.x = (Math.random() - 0.5) * 4;
+                this.y = (Math.random() - 0.5) * 4;
+                this.life = 1.0;
+            }
+            update() {
+                // メビウス変換による位置更新
+                const den = Math.pow(this.x + 1, 2) + Math.pow(this.y, 2);
+                const nextX = ((PHI * this.x + 1) * (this.x + 1) + PHI * Math.pow(this.y, 2)) / den;
+                const nextY = (PHI * this.y * (this.x + 1) - (PHI * this.x + 1) * this.y) / den;
+                
+                this.x = nextX * interactionEnergy;
+                this.y = nextY * interactionEnergy;
+                this.life -= 0.005;
+                if (this.life <= 0) this.reset();
+            }
         }
 
-        let particles = Array.from({ length: 233 }, (_, i) => ({
-            re: Math.cos(2 * Math.PI * i / PHI) * 2,
-            im: Math.sin(2 * Math.PI * i / PHI) * 2,
-            seed: i
-        }));
+        // 初期ノード生成（通貨の初期発行）
+        for(let i=0; i<233; i++) particles.push(new Node(i));
 
-        let t = 0;
-        function draw() {
-            ctx.fillStyle = 'rgba(0, 0, 0, 0.15)';
+        function animate() {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
             ctx.fillRect(0, 0, width, height);
 
-            particles.forEach((p) => {
-                // 人間が能動的に動かしているように見えて、実際は比率の変換器を通している
-                const next = transform(p.re, p.im, mouse.active ? mouse.re : 0, mouse.active ? mouse.im : 0);
-                
-                const x = width / 2 + next.re * scale;
-                const y = height / 2 + next.im * scale;
+            particles.forEach(p => {
+                p.update();
+                const screenX = width / 2 + p.x * (width / 5);
+                const screenY = height / 2 + p.y * (width / 5);
 
-                const dist = mouse.active ? Math.hypot(next.re - mouse.re, next.im - mouse.im) : 1;
-                const brightness = 0.3 + (0.7 / (dist + 0.5)); // マウスに近いほど「共鳴」して光る
-
-                ctx.fillStyle = `rgba(212, 175, 55, ${brightness})`;
+                ctx.fillStyle = `rgba(212, 175, 55, ${p.life})`;
                 ctx.beginPath();
-                ctx.arc(x, y, 1.2, 0, Math.PI * 2);
+                ctx.arc(screenX, screenY, 1.5, 0, Math.PI * 2);
                 ctx.fill();
-
-                p.re = next.re;
-                p.im = next.im;
-
-                if (Math.abs(p.re - PHI) < 0.01 || Math.abs(p.re) > 10) {
-                    p.re = Math.cos(p.seed) * 2.5;
-                    p.im = Math.sin(p.seed) * 2.5;
-                }
             });
 
-            t++;
-            requestAnimationFrame(draw);
+            document.getElementById('nodes').innerText = particles.length;
+            requestAnimationFrame(animate);
         }
-        draw();
+        animate();
     </script>
 </body>
 </html>
