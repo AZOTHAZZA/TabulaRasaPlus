@@ -30,7 +30,6 @@ input, select { width: 100%; padding: 10px; margin-bottom: 10px; border: 1px sol
 .btn { width: 100%; padding: 12px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 0.75rem; transition: 0.2s; outline: none; }
 .btn-neutral { background: var(--accent); color: #fff; }
 .btn-danger { background: #a71d2a; color: #fff; }
-#console { background: #000; color: #adbac7; padding: 12px; font-family: monospace; font-size: 0.7rem; height: 150px; overflow-y: auto; border-radius: 6px; border: 1px solid var(--border); }
 #chronicle-box { background: rgba(0,0,0,0.3); color: var(--text); padding: 15px; font-family: 'Georgia', serif; font-size: 0.85rem; height: 300px; overflow-y: auto; border-radius: 6px; border: 1px solid var(--border); line-height: 1.6; }
 </style>
 </head>
@@ -50,31 +49,23 @@ input, select { width: 100%; padding: 10px; margin-bottom: 10px; border: 1px sol
 </header>
 <nav id="main-nav">
     <button class="tab active" id="btn-canvas" onclick="showPane('canvas')" data-key="tab_canvas"></button>
-    <button class="tab" id="btn-window" onclick="showPane('window')" data-key="tab_window"></button>
-    <button class="tab" id="btn-table" onclick="showPane('table')" data-key="tab_table"></button>
     <button class="tab" id="btn-book" onclick="showPane('book')" data-key="tab_book"></button>
     <button class="tab" id="btn-status" onclick="showPane('status')" data-key="tab_status"></button>
 </nav>
 <main id="viewport">
     <section id="pane-canvas" class="pane active">
         <div class="card"><div class="card-title" data-key="title_canvas"></div><div class="grid" id="scenery-display"></div></div>
+        
+        <div class="card">
+            <div class="card-title" data-key="title_arrival">ARRIVAL</div>
+            <p id="door-status" style="font-size:0.7rem; color:var(--accent); margin-bottom:15px; font-family:monospace;"></p>
+            <button class="btn btn-neutral" data-key="btn_scan" onclick="processIncomingLetter()">CHECK ARRIVAL</button>
+        </div>
+
         <div class="card">
             <div class="card-title" data-key="title_sync_status">LOGISTICS STATUS</div>
             <p id="sync-msg" style="font-size:0.7rem; color:var(--accent); font-family:monospace;">Waiting for Sailing from PORT A...</p>
         </div>
-    </section>
-
-    <section id="pane-window" class="pane">
-        <div class="card">
-            <div class="card-title" data-key="title_window">PURE PORT B</div>
-            <p id="door-status" style="font-size:0.7rem; color:var(--accent); margin-bottom:15px; font-family:monospace;"></p>
-            <div class="label" data-key="label_sync_instr">Arrival & Devanning</div>
-            <button class="btn btn-neutral" data-key="btn_scan" onclick="processIncomingLetter()">CHECK ARRIVAL</button>
-        </div>
-    </section>
-
-    <section id="pane-table" class="pane">
-        <div class="card"><div class="card-title" data-key="title_table"></div><div id="console"></div><input type="text" id="concept-in" placeholder="..." onkeydown="if(event.key==='Enter') useTable()" style="margin-top:10px;"></div>
     </section>
 
     <section id="pane-book" class="pane">
@@ -103,19 +94,19 @@ const TONES = {
 
 const DICTIONARY = {
     en: { 
-        super_title: "TABULA RASA", tab_canvas: "PORT B", tab_window: "ARRIVAL", tab_table: "LOGS", tab_book: "ARCHIVE", tab_status: "STATS", 
-        title_canvas: "PORT", title_window: "PURE PORT B", title_table: "LOGISTICS RECORD", title_book: "EXTERNAL RECORD", title_status: "PORT STATUS", title_sync_status: "LOGISTICS STATUS",
+        super_title: "TABULA RASA", tab_canvas: "PORT B", tab_book: "ARCHIVE", tab_status: "STATS", 
+        title_canvas: "PORT", title_arrival: "ARRIVAL & DEVANNING", title_book: "EXTERNAL RECORD", title_status: "PORT STATUS", title_sync_status: "LOGISTICS STATUS",
         btn_scan: "CHECK ARRIVAL", 
-        label_z: "z-tension", label_w: "w-Logos", label_sync_instr: "Arrival & Devanning",
+        label_z: "z-tension", label_w: "w-Logos",
         door_idle: "Status: WAITING FOR ARRIVAL",
         brands: { neutral: "PURE PORT B", logical: "COLD MONITOR", universal: "UNIVERSE MIRROR" },
         tones: { neutral: "Observer Tone", logical: "Cold Tone", universal: "Aether Tone" }
     },
     jp: { 
-        super_title: "タブラ・ラサ", tab_canvas: "港 B (PORT B)", tab_window: "入港", tab_table: "記録台", tab_book: "公文書", tab_status: "外部状態", 
-        title_canvas: "港 (PORT)", title_window: "PURE PORT B", title_table: "物流記録", title_book: "公文書記録", title_status: "港湾状態", title_sync_status: "物流の状態",
+        super_title: "タブラ・ラサ", tab_canvas: "港 B (PORT B)", tab_book: "公文書", tab_status: "外部状態", 
+        title_canvas: "港 (PORT)", title_arrival: "入港 (Arrival) / 積み下ろし (Devanning)", title_book: "公文書記録", title_status: "港湾状態", title_sync_status: "物流の状態",
         btn_scan: "入港を確認", 
-        label_z: "z-緊張", label_w: "w-数理", label_sync_instr: "入港 (Arrival) ➔ 積み下ろし (Devanning)",
+        label_z: "z-緊張", label_w: "w-数理",
         door_idle: "状態: 船の到着を待機中",
         brands: { neutral: "PURE PORT B", logical: "冷徹なモニター", universal: "宇宙の鏡" },
         tones: { neutral: "観測者トーン", logical: "冷徹トーン", universal: "エーテルトーン" }
@@ -205,13 +196,6 @@ window.addEventListener('storage', (e) => {
         processIncomingLetter();
     }
 });
-
-function useTable(){ 
-    const input=document.getElementById('concept-in').value; if(!input)return;
-    document.getElementById('console').innerHTML+=`<div>> ${input}</div>`;
-    writeChronicle((studio.lang==='jp'?`記録: ${input}`:`Log: ${input}`));
-    document.getElementById('concept-in').value=''; 
-}
 
 function writeChronicle(msg){
     studio.chronicles.push({t: new Date().toLocaleTimeString(), m: msg});
