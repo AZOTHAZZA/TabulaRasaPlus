@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Tabula Rasa PLUS - Pure Mobius Receiver</title>
+<title>Tabula Rasa - PURE PORT B</title>
 <style>
 :root { 
     --ratio: 1.618; 
@@ -37,8 +37,8 @@ input, select { width: 100%; padding: 10px; margin-bottom: 10px; border: 1px sol
 <body>
 <header>
     <div class="brand-group">
-        <div class="super-title" data-key="super_title">TABULA RASA PLUS</div>
-        <div class="brand" id="brand-display">EXTERNAL OBSERVER</div>
+        <div class="super-title" data-key="super_title">TABULA RASA</div>
+        <div class="brand" id="brand-display">PURE PORT B</div>
     </div>
     <div style="display: flex; align-items: center; gap: 10px;">
         <select id="ui-tone" onchange="applyTheme(true)" style="width:auto; margin:0; font-size:0.65rem; background:#000; color:#fff; border:1px solid #333;"></select>
@@ -59,17 +59,17 @@ input, select { width: 100%; padding: 10px; margin-bottom: 10px; border: 1px sol
     <section id="pane-canvas" class="pane active">
         <div class="card"><div class="card-title" data-key="title_canvas"></div><div class="grid" id="scenery-display"></div></div>
         <div class="card">
-            <div class="card-title" data-key="title_sync_status">BRIDGE STATUS</div>
-            <p id="sync-msg" style="font-size:0.7rem; color:var(--accent); font-family:monospace;">Waiting for PURE signal...</p>
+            <div class="card-title" data-key="title_sync_status">LOGISTICS STATUS</div>
+            <p id="sync-msg" style="font-size:0.7rem; color:var(--accent); font-family:monospace;">Waiting for Sailing from PORT A...</p>
         </div>
     </section>
 
     <section id="pane-window" class="pane">
         <div class="card">
-            <div class="card-title" data-key="title_window">RECEIVER</div>
+            <div class="card-title" data-key="title_window">PORT B</div>
             <p id="door-status" style="font-size:0.7rem; color:var(--accent); margin-bottom:15px; font-family:monospace;"></p>
-            <div class="label" data-key="label_sync_instr">Internal ↔ External Bridge</div>
-            <button class="btn btn-neutral" data-key="btn_scan" onclick="processIncomingLetter()">CHECK FOR PACKETS</button>
+            <div class="label" data-key="label_sync_instr">Arrival & Devanning</div>
+            <button class="btn btn-neutral" data-key="btn_scan" onclick="processIncomingLetter()">CHECK ARRIVAL</button>
         </div>
     </section>
 
@@ -83,7 +83,7 @@ input, select { width: 100%; padding: 10px; margin-bottom: 10px; border: 1px sol
 
     <section id="pane-status" class="pane">
         <div class="card">
-            <div class="card-title" data-key="title_status">EXTERNAL STATUS</div>
+            <div class="card-title" data-key="title_status">PORT STATUS</div>
             <div class="grid">
                 <div class="data-node"><div class="label" data-key="label_z"></div><div class="value" id="z-val">0</div></div>
                 <div class="data-node"><div class="label" data-key="label_w"></div><div class="value" id="w-val">0</div></div>
@@ -103,21 +103,21 @@ const TONES = {
 
 const DICTIONARY = {
     en: { 
-        super_title: "TABULA RASA PLUS", tab_canvas: "MONITOR", tab_window: "RECEIVER", tab_table: "LOGS", tab_book: "ARCHIVE", tab_status: "STATS", 
-        title_canvas: "EXTERNAL MONITOR", title_window: "SIGNAL RECEIVER", title_table: "PROCESS LOG", title_book: "EXTERNAL RECORD", title_status: "SYSTEM STATS", title_sync_status: "BRIDGE STATUS",
-        btn_scan: "CHECK BRIDGE", 
-        label_z: "z-tension", label_w: "w-harmony", label_sync_instr: "Sync with Origin Studio",
-        door_idle: "Status: LISTENING FOR PACKETS",
-        brands: { neutral: "EXTERNAL OBSERVER", logical: "COLD MONITOR", universal: "UNIVERSE MIRROR" },
+        super_title: "TABULA RASA", tab_canvas: "PORT", tab_window: "ARRIVAL", tab_table: "LOGS", tab_book: "ARCHIVE", tab_status: "STATS", 
+        title_canvas: "PORT", title_window: "PURE PORT B", title_table: "LOGISTICS RECORD", title_book: "EXTERNAL RECORD", title_status: "PORT STATUS", title_sync_status: "LOGISTICS STATUS",
+        btn_scan: "CHECK ARRIVAL", 
+        label_z: "z-tension", label_w: "w-harmony", label_sync_instr: "Arrival & Devanning",
+        door_idle: "Status: WAITING FOR ARRIVAL",
+        brands: { neutral: "PURE PORT B", logical: "COLD MONITOR", universal: "UNIVERSE MIRROR" },
         tones: { neutral: "Observer Tone", logical: "Cold Tone", universal: "Aether Tone" }
     },
     jp: { 
-        super_title: "タブラ・ラサ PLUS", tab_canvas: "監視窓", tab_window: "受信機", tab_table: "記録台", tab_book: "公文書", tab_status: "外部状態", 
-        title_canvas: "外部モニター", title_window: "信号受信機", title_table: "処理記録", title_book: "公文書記録", title_status: "システム状態", title_sync_status: "ブリッジ状態",
-        btn_scan: "パケットを確認", 
-        label_z: "z-緊張", label_w: "w-調和", label_sync_instr: "スタジオ本体と同期",
-        door_idle: "状態: パケット待機中",
-        brands: { neutral: "外部観測器", logical: "冷徹なモニター", universal: "宇宙の鏡" },
+        super_title: "タブラ・ラサ", tab_canvas: "PORT B", tab_window: "入港", tab_table: "記録台", tab_book: "公文書", tab_status: "外部状態", 
+        title_canvas: "PORT", title_window: "PURE PORT B", title_table: "物流記録", title_book: "公文書記録", title_status: "港湾状態", title_sync_status: "物流の状態",
+        btn_scan: "入港を確認", 
+        label_z: "z-緊張", label_w: "w-調和", label_sync_instr: "入港 (Arrival) ➔ 積み下ろし (Devanning)",
+        door_idle: "状態: 船の到着を待機中",
+        brands: { neutral: "PURE PORT B", logical: "冷徹なモニター", universal: "宇宙の鏡" },
         tones: { neutral: "観測者トーン", logical: "冷徹トーン", universal: "エーテルトーン" }
     }
 };
@@ -170,20 +170,17 @@ function showPane(id) {
     document.getElementById('btn-' + id).classList.add('active');
 }
 
-// 🏛️ PLUSの核心：ブリッジから届いたパケットを「着金」させる
 async function processIncomingLetter() {
     const status = document.getElementById('door-status');
     const syncMsg = document.getElementById('sync-msg');
     const d = DICTIONARY[studio.lang];
     
-    // ブリッジ領域を確認
     const packet = JSON.parse(localStorage.getItem('TR_Bridge_to_Plus'));
     
     if (packet) {
-        status.textContent = studio.lang==='jp'?"状態: パケット解析中...":"Status: ANALYZING...";
+        status.textContent = studio.lang==='jp'?"状態: 積み下ろし中 (Devanning)...":"Status: DEVANNING...";
         await new Promise(r => setTimeout(r, 1000));
 
-        // 数理的着金処理
         const unit = packet.unit;
         const amount = packet.amount;
         
@@ -191,20 +188,18 @@ async function processIncomingLetter() {
             studio.scenery[unit] += amount;
             studio.tension = Math.abs((studio.tension + (amount / 1000)) % (PHI * 2));
             
-            // パケットを処理したので削除（二重着金防止）
             localStorage.removeItem('TR_Bridge_to_Plus');
             
-            writeChronicle(studio.lang==='jp'?`${amount} ${unit} の次元移転を承認しました`:`Accepted transfer of ${amount} ${unit}.`);
+            writeChronicle(studio.lang==='jp'?`${amount} ${unit} の積み下ろしを完了しました`:`Completed devanning of ${amount} ${unit}.`);
             status.textContent = d.door_idle;
-            syncMsg.textContent = studio.lang==='jp'?"最新のパケットを受信しました":"Packet received.";
+            syncMsg.textContent = studio.lang==='jp'?"コンテナを入荷しました":"Container arrived.";
             save(); updateUI();
         }
     } else {
-        syncMsg.textContent = studio.lang==='jp'?"待機中：パケットが見つかりません":"Waiting: No packets found.";
+        syncMsg.textContent = studio.lang==='jp'?"待機中：船影が見えません":"Waiting: No arrival detected.";
     }
 }
 
-// ストレージ監視（別タブで送金されたら即座に反応）
 window.addEventListener('storage', (e) => {
     if (e.key === 'TR_Bridge_to_Plus') {
         processIncomingLetter();
