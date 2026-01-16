@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Tabula Rasa - PURE PORT B</title>
+<title>Tabula Rasa - PORT B</title>
 <style>
 :root { 
     --ratio: 1.618; 
@@ -66,7 +66,7 @@ input, select { width: 100%; padding: 10px; margin-bottom: 10px; border: 1px sol
 
     <section id="pane-window" class="pane">
         <div class="card">
-            <div class="card-title" data-key="title_window">PORT B</div>
+            <div class="card-title" data-key="title_window">PURE PORT B</div>
             <p id="door-status" style="font-size:0.7rem; color:var(--accent); margin-bottom:15px; font-family:monospace;"></p>
             <div class="label" data-key="label_sync_instr">Arrival & Devanning</div>
             <button class="btn btn-neutral" data-key="btn_scan" onclick="processIncomingLetter()">CHECK ARRIVAL</button>
@@ -103,19 +103,19 @@ const TONES = {
 
 const DICTIONARY = {
     en: { 
-        super_title: "TABULA RASA", tab_canvas: "PORT", tab_window: "ARRIVAL", tab_table: "LOGS", tab_book: "ARCHIVE", tab_status: "STATS", 
+        super_title: "TABULA RASA", tab_canvas: "PORT B", tab_window: "ARRIVAL", tab_table: "LOGS", tab_book: "ARCHIVE", tab_status: "STATS", 
         title_canvas: "PORT", title_window: "PURE PORT B", title_table: "LOGISTICS RECORD", title_book: "EXTERNAL RECORD", title_status: "PORT STATUS", title_sync_status: "LOGISTICS STATUS",
         btn_scan: "CHECK ARRIVAL", 
-        label_z: "z-tension", label_w: "w-harmony", label_sync_instr: "Arrival & Devanning",
+        label_z: "z-tension", label_w: "w-Logos", label_sync_instr: "Arrival & Devanning",
         door_idle: "Status: WAITING FOR ARRIVAL",
         brands: { neutral: "PURE PORT B", logical: "COLD MONITOR", universal: "UNIVERSE MIRROR" },
         tones: { neutral: "Observer Tone", logical: "Cold Tone", universal: "Aether Tone" }
     },
     jp: { 
-        super_title: "タブラ・ラサ", tab_canvas: "PORT B", tab_window: "入港", tab_table: "記録台", tab_book: "公文書", tab_status: "外部状態", 
-        title_canvas: "PORT", title_window: "PURE PORT B", title_table: "物流記録", title_book: "公文書記録", title_status: "港湾状態", title_sync_status: "物流の状態",
+        super_title: "タブラ・ラサ", tab_canvas: "港 B (PORT B)", tab_window: "入港", tab_table: "記録台", tab_book: "公文書", tab_status: "外部状態", 
+        title_canvas: "港 (PORT)", title_window: "PURE PORT B", title_table: "物流記録", title_book: "公文書記録", title_status: "港湾状態", title_sync_status: "物流の状態",
         btn_scan: "入港を確認", 
-        label_z: "z-緊張", label_w: "w-調和", label_sync_instr: "入港 (Arrival) ➔ 積み下ろし (Devanning)",
+        label_z: "z-緊張", label_w: "w-数理", label_sync_instr: "入港 (Arrival) ➔ 積み下ろし (Devanning)",
         door_idle: "状態: 船の到着を待機中",
         brands: { neutral: "PURE PORT B", logical: "冷徹なモニター", universal: "宇宙の鏡" },
         tones: { neutral: "観測者トーン", logical: "冷徹トーン", universal: "エーテルトーン" }
